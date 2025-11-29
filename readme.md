@@ -12,8 +12,8 @@ L’obiettivo finale è usare questo modello come “cervello” a bordo per:
 - loggare meglio i dati,
 - supportare logiche avanzate (diagnostica, safety, R&D).
 
-> ⚠️ Questa repo è pensata come **prototipo offline**.  
-> Per usarla su un razzo reale bisogna fare alcune personalizzazioni (vedi sezione “Cosa manca per usarlo sul vostro razzo reale”).
+>  Questa repo è pensata come **prototipo offline**.  
+> Per usarla su un razzo reale bisogna fare alcune personalizzazioni (vedi sezione “Cosa manca per usarlo sul razzo").
 
 ---
 
