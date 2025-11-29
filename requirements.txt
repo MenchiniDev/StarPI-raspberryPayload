@@ -1,0 +1,6 @@
+rocketpy
+numpy
+pandas
+scikit-learn
+matplotlib
+joblib
