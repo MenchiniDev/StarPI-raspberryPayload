@@ -44,9 +44,7 @@ Contiene il **modello fisico del razzo** usato per generare i dati:
   - lancia una simulazione `Flight` completa (ascesa + discesa),
   - restituisce oggetti `env, rocket, motor, flight`.
 
-È il “motore fisico” che tutto il resto usa per generare dati.
-
-> Nel vostro caso, questo file andrà adattato per usare **il vostro razzo**: masse, motore, curve di drag, ecc.
+> questo file andrà adattato: masse, motore, curve di drag, ecc.
 
 ---
 
@@ -83,7 +81,7 @@ Cosa fa:
      - accelerazione misurata `az_meas = az_true + rumore_IMU`
    - **Norma accelerazione verticale** `acc_norm_meas` (per avere una feature legata ai carichi).
 
-5. Salva tutto in una grande tabella `flight_phase_dataset.csv` con colonne tipo:
+5. Salva tutto in `flight_phase_dataset.csv` con colonne tipo:
 
    - `flight_id` – indice del volo simulato
    - `time`
@@ -91,8 +89,6 @@ Cosa fa:
    - `alt_agl_true`, `alt_agl_meas`
    - `vz_true`, `vz_meas`
    - `az_meas`, `acc_norm_meas`
-
-Questo file è la base per l’addestramento del modello.
 
 ---
 
@@ -103,12 +99,12 @@ Allena il **Random Forest** a partire dal dataset.
 Passi principali:
 
 1. Carica `data/flight_phase_dataset.csv`.
-2. Usa come **feature di input** SOLO dati “misurati” (cioè simulati come sensori di bordo), ad esempio:
+2. Usa come **feature di input** SOLO dati “misurati” (cioè simulati come sensori di bordo):
    - `alt_agl_meas`
    - `vz_meas`
    - `az_meas`
    - `acc_norm_meas`
-3. Usa come **target** la colonna `phase`.
+3. **classi** contenute in `phase`.
 4. Divide in **train/validation**.
 5. Allena un `RandomForestClassifier` con:
    - ~300 alberi
@@ -146,21 +142,7 @@ Nel mondo reale, il loop su `df_flight.iterrows()` sarà sostituito da:
 - chiamata al modello Random Forest,
 - logging + eventuale logica decisionale.
 
----
-
-## 🧠 Logica della pipeline
-
-In sintesi:
-
-1. **RocketPy** → genera traiettorie fisicamente realistiche.
-2. **Simulatore sensori** → aggiunge rumore e drift a quota, velocità, accelerazione.
-3. **Label fasi** → assegna a ogni campione una fase (ground, boost, coast, descent).
-4. **Random Forest** → impara a mappare (sensori rumorosi) → (fase di volo).
-5. **Raspberry Pi** → in futuro userà lo stesso modello per classificare le fasi **in volo**.
-
----
-
-## 🧩 Cosa manca per usarlo con IL VOSTRO razzo
+## Cosa manca per usarlo con razzo (nome da definire)
 
 Al momento il modello è basato su:
 
@@ -170,21 +152,21 @@ Al momento il modello è basato su:
 
 Per renderlo **utilizzabile e credibile** sul vostro razzo EuroC, bisognerà:
 
-### 1. Adattare il modello RocketPy al vostro razzo
+### 1. Adattare il modello RocketPy
 
 Nel file `rocket_model.py`:
 
-- sostituire massa, distribuzione di massa e momenti d’inerzia con quelli del vostro CAD;
+- sostituire massa, distribuzione di massa e momenti d’inerzia con quelli del CAD;
 - sostituire la geometria (lunghezze, diametri, pinne);
-- usare le vostre **curve di drag** (senza airbrake) ottenute da:
-  - CFD sul vostro modello 3D, oppure
+- usare le **curve di drag** (senza airbrake) ottenute da:
+  - CFD sul modello 3D, oppure
   - software tipo OpenRocket/rasAero/altro, oppure
-  - galleria del vento (se disponibile);
-- usare il vostro **motore reale**:
+  - galleria del vento (se bona);
+- usare il **motore reale**:
   - file `.eng` corretto,
   - spinta e durata verificate.
 
-Questo rende il dataset sintetico **coerente con il vostro razzo**.
+Questo rende il dataset sintetico **coerente con il razzo**.
 
 ---
 
